@@ -1,0 +1,40 @@
+Gene,Category,Description,G1,G2,G3,G4,G5,G6,G7,G8,G9
+Lamp1,Lysosomal membrane,Lysosomal membrane protein 1 (Meh: IF marker),↑1.13*,↑0.42*,↓0.12,↓0.11*,↑0.05,↓0.26,↑1.34*,↑1.62*,↑1.51*
+Lamp2,Lysosomal membrane,Lysosomal membrane protein 2,↑0.32*,↑0.13*,↓0.27*,↑0.07,↓0.08*,↓0.23,↑0.89,↑0.77,↑0.78
+Cd63,Lysosomal membrane,Lysosome-phagosome fusion marker,↑2.38*,↑0.97*,↑0.67*,↑0.62*,↑0.31*,↑2.17*,↑3.27*,↑2.02*,↑2.62*
+Cd68,Lysosomal membrane,Lysosomal macrophage marker,↑1.54*,↑0.74*,↑0.19*,↓0.12*,↑0.60*,↑0.39,↑1.68*,↑1.32*,↑0.73
+Ctsb,Cathepsins,Cysteine protease (Meh: transcript↑),↑2.47*,↑0.77*,↑0.42*,↑0.40*,↑0.52*,↑1.65*,↑2.73*,↑2.26*,↑2.24*
+Ctsd,Cathepsins,Aspartyl protease (Meh: activity↓),↑1.58*,↑0.74*,↓1.08*,↓0.43*,↓1.31*,↓0.61,↑2.11*,↑1.75*,↑1.76*
+Ctsl,Cathepsins,Cysteine protease,↑1.52*,↑0.75*,↓0.24,↑0.23*,↓0.68*,↑0.77*,↑2.20*,↑0.84*,↑1.07*
+Ctse,Cathepsins,Aspartyl protease,n/f,↑0.08*,↑4.12,↑3.98,↑1.59,↑1.28,↑3.70*,↑3.90*,↑6.91*
+Lipa,Lysosomal hydrolases,Lysosomal acid lipase CE/TG (Meh↑),↑1.74*,↑0.64*,↑0.45*,↑0.46*,↑0.99*,↑0.25,↑2.22*,↑2.00*,↑1.75*
+Gba,Lysosomal hydrolases,Glucocerebrosidase,↑1.42*,↑0.55*,↑0.61*,↑0.58*,↑1.04*,↑0.66,↑1.64*,↑1.01*,↑0.85
+Galc,Lysosomal hydrolases,Galactosylceramidase (myelin lipid),↑1.00*,↑0.53*,↑0.11,↑0.84*,↑0.22*,↑0.29,↑1.06*,↑1.45*,↑1.31*
+Hexa,Lysosomal hydrolases,Hexosaminidase A,↑0.64*,↑0.17*,↓0.56*,↓0.54*,↓0.30*,↓0.97*,↑0.84*,↑1.27*,↑1.10*
+Gusb,Lysosomal hydrolases,Beta-glucuronidase,↑1.11*,↑0.60*,↑0.36*,↑0.28*,↑0.68*,↑0.60,↑1.85*,↑1.55*,↑0.93*
+Naglu,Lysosomal hydrolases,N-acetylglucosaminidase (Meh: activity↓),↑1.16*,↑0.33*,↑0.07,↑0.16*,↑0.25*,↓0.61,↑1.26,↑1.14,↑0.22
+Lgals3,Lysosomal hydrolases,"Galectin-3, lysosomal damage marker (Meh↑)",↑5.45*,↑0.82*,↑6.51*,↑4.43*,↑6.26*,↑6.23*,↑6.96*,↑3.07*,↑5.92*
+Anxa5,Lysosomal hydrolases,Phago-lysosomal coupling (Meh↑),↑3.20*,↑0.89*,↑2.50*,↑1.39*,↑3.22*,↑2.87*,↑2.30*,↑2.24*,↑2.61*
+Atp6v0d1,Lysosomal acidification,V-ATPase subunit d1,↑0.79*,↑0.43*,↑0.61*,↑0.36*,↑0.93*,↑0.66*,↑0.51,↑1.19*,↑0.30
+Atp6v1h,Lysosomal acidification,V-ATPase subunit h,↓0.25*,↓0.01*,↓0.43,↑0.07*,↑0.06*,↑0.81*,↑0.27,↑0.65*,↑0.01
+Lamtor1,Lysosomal acidification,mTORC1-lysosome platform (Ragulator),↑1.08*,↑0.31*,↑0.65*,↑0.25*,↑0.78*,↑0.19,↑0.76,↑1.21*,↑0.95*
+Npc1,Intralysosomal cholesterol,Lysosomal cholesterol export pump,↑0.16*,↓0.00*,↓0.72,↑0.43*,↓0.31,↓0.49,↑0.16,↑0.65,↑0.57
+Npc2,Intralysosomal cholesterol,Intralysosomal cholesterol carrier (Meh↑),↑1.16*,↑0.31*,↑0.82*,↑0.51*,↑1.10*,↑0.23,↑1.64*,↑1.41*,↑1.18*
+Nceh1,Intralysosomal cholesterol,Neutral CE hydrolase (Meh↑),↑2.99*,↑0.93*,↑1.31*,↑1.68*,↑1.50*,↑2.61*,↑2.02*,↑2.22*,↑1.97*
+Cyp46a1,Cholesterol export / esterification,Cholesterol→24-OHC (primary export),n/f,n/f,↓1.41,↑0.65*,↓0.84,↓2.94*,↓4.17*,↓4.02*,↓3.76*
+Abca1,Cholesterol export / esterification,Cellular cholesterol efflux,↑0.02*,↑0.18*,↓0.52*,↑0.98*,↓0.28,↑1.00,↑1.14*,↑1.39*,↑1.71*
+Abcg1,Cholesterol export / esterification,Cellular cholesterol efflux,↑0.67*,↑0.02*,↑0.32*,↑0.89*,↑0.64*,↑0.28,↑1.23,↑2.14*,↑1.48
+Osbpl1a,Cholesterol export / esterification,ER-lysosome sterol transfer,↓0.54*,↓0.47*,↓1.44*,↑0.74*,↓1.16*,↓1.36,↓1.90*,↓0.63,↓0.88
+Soat1,Cholesterol export / esterification,Cholesterol esterification → CE/LD,↑1.28*,↑0.65*,↑0.43*,↑0.97*,↑0.93*,↑1.37*,↑1.71*,↑1.82*,↑1.75*
+Ch25h,Cholesterol export / esterification,25-hydroxylase (oxysterol bypass),↑6.52*,↑2.31*,↑3.73*,↑3.86*,↑2.51*,↑7.28*,↑6.91*,↑1.48,↑5.74*
+Cd36,Phagocytic uptake,Lipid/myelin receptor (Meh: myelin uptake),↑3.23*,↑0.41*,↑0.08,↓0.48,↑0.62*,↑4.51*,↑2.94*,↑3.81*,↑1.20
+Msr1,Phagocytic uptake,Scavenger receptor (myelin uptake),↑4.07*,↑1.39*,↑2.33*,↑1.21*,↑2.95*,↑6.40*,↑5.60*,↑2.18*,↑3.38*
+Axl,Phagocytic uptake,"TAM receptor, myelin phagocytosis",↑2.39*,↑0.60*,↑2.78*,↑2.47*,↑2.45*,↓0.76,↑1.62,↑2.49*,↑3.05*
+Mertk,Phagocytic uptake,"TAM receptor, myelin phagocytosis",↓1.17*,↓1.20*,↓2.25*,↓0.29*,↓2.44*,↓1.47*,↓0.99,↓0.69,↓0.28
+Sqstm1,Autophagy-lysosome,p62 autophagy receptor (Meh: protein↑),↑0.98*,↑0.69*,↑0.28*,↑0.03,↑0.66*,↑1.81*,↑0.97*,↑0.68,↑0.88
+Map1lc3b,Autophagy-lysosome,LC3 autophagosome marker (Meh: protein↑),↑1.31*,↑0.50*,↑0.54*,↑0.25*,↑0.67*,↓0.22,↑0.15,↑0.54,↑0.60
+Becn1,Autophagy-lysosome,Autophagy initiation (Beclin-1),↓0.11*,↓0.08*,↑0.69*,↑0.62*,↑0.91*,↑0.49,↓0.16,↑0.67,↑0.99
+Tfeb,Autophagy-lysosome,Lysosome biogenesis TF (CLEAR network),↓0.77,↓0.87*,↓0.12,↓0.26,↑0.11*,↓1.05,↑0.08,↑0.37,↓0.51
+Tfec,Autophagy-lysosome,TFEB family (phagocytic activation),↑1.79*,↑0.10*,↑1.41,↑0.33,↑1.66*,↑1.32,↑2.86*,↑1.94*,↑1.62
+Plin2,Autophagy-lysosome,Lipid droplet coat protein (LD marker),↑4.23*,↑1.23*,↑2.65*,↑1.60*,↑3.28*,↑4.01*,↑4.99*,↑3.21*,↑2.92*
+Il1b,Autophagy-lysosome,Inflammation / NF-κB target,↑1.66*,n/f,↑4.18*,↑2.45*,↑3.44*,↑2.81*,↑2.99*,↑2.67*,↑3.67*

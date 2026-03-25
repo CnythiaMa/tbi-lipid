@@ -1,0 +1,6 @@
+cell_type,total_tested,n_up,n_down,n_sig_total
+Hepatocyte,8413,398,1244,1642
+Kupffer_cell,7866,395,217,612
+Hepatic_stellate,8160,377,110,487
+Endothelial,7503,378,221,599
+Cholangiocyte,7737,2,6,8

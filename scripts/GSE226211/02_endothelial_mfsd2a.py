@@ -17,8 +17,8 @@ from pathlib import Path
 import warnings
 warnings.filterwarnings('ignore')
 
-DATA_DIR = Path("/volume/data/xyma/jsonl/training/tbi/data/GSE226211")
-RESULTS_DIR = Path("/volume/data/xyma/jsonl/training/tbi/results/GSE226211")
+DATA_DIR = Path("/Users/maxue/Documents/vscode/tbi/data/GSE226211")
+RESULTS_DIR = Path("/Users/maxue/Documents/vscode/tbi/results/GSE226211")
 
 plt.rcParams.update({
     'font.size': 10, 'figure.dpi': 150, 'savefig.dpi': 150,
@@ -26,28 +26,21 @@ plt.rcParams.update({
     'font.family': 'DejaVu Sans'
 })
 
-# Sample metadata
+# Sample metadata — INH samples excluded (Intact + CTRL only)
 SAMPLE_META = {
-    'GSM7068147_MUC13721': {'condition': 'Intact', 'timepoint': 'Intact'},
+    'GSM7068147_MUC13721': {'condition': 'Intact',    'timepoint': 'Intact'},
     'GSM7068148_MUC13722': {'condition': '3dpi_CTRL', 'timepoint': '3dpi'},
     'GSM7068149_MUC13723': {'condition': '3dpi_CTRL', 'timepoint': '3dpi'},
-    'GSM7068150_MUC13724': {'condition': '3dpi_INH', 'timepoint': '3dpi'},
-    'GSM7068151_MUC13725': {'condition': '3dpi_INH', 'timepoint': '3dpi'},
-    'GSM7068152_MUC13726': {'condition': 'Intact', 'timepoint': 'Intact'},
+    'GSM7068152_MUC13726': {'condition': 'Intact',    'timepoint': 'Intact'},
     'GSM7068153_MUC13727': {'condition': '5dpi_CTRL', 'timepoint': '5dpi'},
-    'GSM7068154_MUC13729': {'condition': '5dpi_INH', 'timepoint': '5dpi'},
-    'GSM7068155_MUC13730': {'condition': '5dpi_INH', 'timepoint': '5dpi'},
-    'GSM7068156_MUC13731': {'condition': 'Intact', 'timepoint': 'Intact'},
-    'GSM7068157_MUC13732': {'condition': 'Intact', 'timepoint': 'Intact'},
+    'GSM7068156_MUC13731': {'condition': 'Intact',    'timepoint': 'Intact'},
+    'GSM7068157_MUC13732': {'condition': 'Intact',    'timepoint': 'Intact'},
     'GSM7068158_MUC18415': {'condition': '5dpi_CTRL', 'timepoint': '5dpi'},
-    'GSM7068159_MUC29190': {'condition': 'Intact', 'timepoint': 'Intact'},
+    'GSM7068159_MUC29190': {'condition': 'Intact',    'timepoint': 'Intact'},
     'GSM7068160_21L008532': {'condition': '5dpi_CTRL', 'timepoint': '5dpi'},
-    'GSM7068161_21L008533': {'condition': '5dpi_INH', 'timepoint': '5dpi'},
 }
 
-# Only CTRL (no inhibitor)
-CTRL_SAMPLES = {k: v for k, v in SAMPLE_META.items()
-                if v['condition'] in ['Intact', '3dpi_CTRL', '5dpi_CTRL']}
+CTRL_SAMPLES = SAMPLE_META  # all entries are Intact/CTRL, no INH
 
 # =============================================================================
 # 1. Load all CTRL samples

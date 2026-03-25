@@ -287,8 +287,8 @@ Researchers interested in this axis should check:
 |---|---------|------|------|
 | 1 | Marschallinger et al. LDAM in aging brain. *Nat Neurosci.* | 31959936 | 2020 |
 | 2 | Zambusi et al. TDP-43 and LD in microglia after TBI. *Nat Neurosci.* | 36424432 | 2022 |
-| 3 | Zhang et al. FASN acetylation and microglial LD in TBI. *Redox Biol.* | 41412037 | 2026 |
-| 4 | Mehrabani-Tabari et al. Autophagy and microglial lipid reprogramming. *Res Sq.* | 41282218 | 2025 |
+| 3 | Zhang et al. FASN acetylation and microglial LD in TBI. *Redox Biol.* | [41412037](https://pmc.ncbi.nlm.nih.gov/articles/PMC12808841/) | 2026 |
+| 4 | Mehrabani-Tabari et al. Autophagy and microglial lipid reprogramming. *Res Sq.* | [41282218](https://pmc.ncbi.nlm.nih.gov/articles/PMC12633487/) | 2025 |
 | 5 | Chen et al. Hydrogel for LD and neuroinflammation in TBI. *Adv Funct Mater.* | 40857429 | 2025 |
 | 6 | Hu et al. RetSat KO and microglial LD degradation. *Glia.* | 41388745 | 2026 |
 | 7 | Sung et al. Microglial LD as therapeutic targets (review). *NPJ Aging.* | 41318530 | 2025 |

@@ -18,8 +18,8 @@ from pathlib import Path
 import warnings
 warnings.filterwarnings('ignore')
 
-DATA_DIR = Path("/volume/data/xyma/jsonl/training/tbi/data/GSE226211")
-RESULTS_DIR = Path("/volume/data/xyma/jsonl/training/tbi/results/GSE226211")
+DATA_DIR = Path("/Users/maxue/Documents/vscode/tbi/data/GSE226211")
+RESULTS_DIR = Path("/Users/maxue/Documents/vscode/tbi/results/GSE226211")
 RESULTS_DIR.mkdir(parents=True, exist_ok=True)
 
 plt.rcParams.update({
@@ -28,28 +28,21 @@ plt.rcParams.update({
     'font.family': 'DejaVu Sans'
 })
 
-# Sample metadata (from GEO GSE226207)
+# Sample metadata — INH samples excluded (Intact + CTRL only)
 SAMPLE_META = {
-    'GSM7068147_MUC13721': {'condition': 'Intact', 'timepoint': 'Intact'},
+    'GSM7068147_MUC13721': {'condition': 'Intact',    'timepoint': 'Intact'},
     'GSM7068148_MUC13722': {'condition': '3dpi_CTRL', 'timepoint': '3dpi'},
     'GSM7068149_MUC13723': {'condition': '3dpi_CTRL', 'timepoint': '3dpi'},
-    'GSM7068150_MUC13724': {'condition': '3dpi_INH', 'timepoint': '3dpi'},
-    'GSM7068151_MUC13725': {'condition': '3dpi_INH', 'timepoint': '3dpi'},
-    'GSM7068152_MUC13726': {'condition': 'Intact', 'timepoint': 'Intact'},
+    'GSM7068152_MUC13726': {'condition': 'Intact',    'timepoint': 'Intact'},
     'GSM7068153_MUC13727': {'condition': '5dpi_CTRL', 'timepoint': '5dpi'},
-    'GSM7068154_MUC13729': {'condition': '5dpi_INH', 'timepoint': '5dpi'},
-    'GSM7068155_MUC13730': {'condition': '5dpi_INH', 'timepoint': '5dpi'},
-    'GSM7068156_MUC13731': {'condition': 'Intact', 'timepoint': 'Intact'},
-    'GSM7068157_MUC13732': {'condition': 'Intact', 'timepoint': 'Intact'},
+    'GSM7068156_MUC13731': {'condition': 'Intact',    'timepoint': 'Intact'},
+    'GSM7068157_MUC13732': {'condition': 'Intact',    'timepoint': 'Intact'},
     'GSM7068158_MUC18415': {'condition': '5dpi_CTRL', 'timepoint': '5dpi'},
-    'GSM7068159_MUC29190': {'condition': 'Intact', 'timepoint': 'Intact'},
+    'GSM7068159_MUC29190': {'condition': 'Intact',    'timepoint': 'Intact'},
     'GSM7068160_21L008532': {'condition': '5dpi_CTRL', 'timepoint': '5dpi'},
-    'GSM7068161_21L008533': {'condition': '5dpi_INH', 'timepoint': '5dpi'},
 }
 
-# Focus on Intact and CTRL conditions (no inhibitor)
-CTRL_SAMPLES = {k: v for k, v in SAMPLE_META.items()
-                if v['condition'] in ['Intact', '3dpi_CTRL', '5dpi_CTRL']}
+CTRL_SAMPLES = SAMPLE_META  # all entries are Intact/CTRL, no INH
 
 # =============================================================================
 # 1. Load and merge CTRL samples
@@ -102,10 +95,10 @@ adata_hvg = adata[:, adata.var['highly_variable']].copy()
 sc.pp.scale(adata_hvg, max_value=10)
 
 # PCA + neighbors + clustering
-sc.tl.pca(adata_hvg, n_comps=50)
-sc.pp.neighbors(adata_hvg, n_pcs=30)
-sc.tl.umap(adata_hvg)
-sc.tl.leiden(adata_hvg, resolution=0.8)
+sc.tl.pca(adata_hvg, n_comps=50, random_state=0)
+sc.pp.neighbors(adata_hvg, n_pcs=30, random_state=0)
+sc.tl.umap(adata_hvg, random_state=0)
+sc.tl.leiden(adata_hvg, resolution=0.8, random_state=0)
 
 # Transfer embeddings back
 adata.obsm['X_umap'] = adata_hvg.obsm['X_umap']
@@ -114,61 +107,251 @@ adata.obs['leiden'] = adata_hvg.obs['leiden']
 print(f"Clusters: {adata.obs['leiden'].nunique()}")
 
 # =============================================================================
-# 3. Identify microglia clusters using markers
+# 3. Cell type annotation — relative scoring (ref: liver snRNA-seq pipeline)
 # =============================================================================
 print("\nIdentifying cell types...")
 
-# Key markers
-markers = {
-    'Microglia': ['Tmem119', 'P2ry12', 'Cx3cr1', 'Hexb', 'Csf1r', 'Aif1'],
-    'Astrocyte': ['Gfap', 'Aqp4', 'Aldh1l1', 'S100b', 'Slc1a3'],
-    'Oligodendrocyte': ['Mbp', 'Plp1', 'Mog', 'Cnp'],
-    'OPC': ['Pdgfra', 'Cspg4', 'Sox10'],
-    'Neuron': ['Rbfox3', 'Snap25', 'Syt1', 'Stmn2'],
-    'Endothelial': ['Pecam1', 'Cldn5', 'Flt1'],
-    'Macrophage': ['Ccr2', 'Lyz2', 'Ms4a7'],
+MARKERS = {
+    'Microglia':      ['Tmem119', 'P2ry12', 'Cx3cr1', 'Hexb', 'Csf1r', 'Aif1'],
+    'Astrocyte':      ['Gfap', 'Aqp4', 'Aldh1l1', 'S100b', 'Slc1a3'],
+    'Oligodendrocyte':['Mbp', 'Plp1', 'Mog', 'Cnp'],
+    'OPC':            ['Pdgfra', 'Cspg4', 'Sox10'],
+    'Neuron':         ['Rbfox3', 'Snap25', 'Syt1', 'Stmn2'],
+    'Endothelial':    ['Pecam1', 'Cldn5', 'Flt1', 'Tie1', 'Kdr'],
+    'Macrophage':     ['Ccr2', 'Lyz2', 'Ms4a7'],
+    'Pericyte':       ['Pdgfrb', 'Rgs5', 'Kcnj8'],
+    'T_cell':         ['Cd3e', 'Cd3d', 'Cd4', 'Cd8a', 'Trac'],
+    'B_cell':         ['Cd79a', 'Ms4a1', 'Pax5', 'Cd19'],
 }
 
-# Score each cluster for marker expression
-cluster_scores = {}
-for ct, genes in markers.items():
+for ct, genes in MARKERS.items():
     avail = [g for g in genes if g in adata.var_names]
     if avail:
         sc.tl.score_genes(adata, avail, score_name=f'{ct}_score')
+        print(f"  {ct}: {len(avail)}/{len(genes)} markers found")
 
-# Assign cell types based on highest marker score
-marker_scores = ['Microglia_score', 'Astrocyte_score', 'Oligodendrocyte_score',
-                 'OPC_score', 'Neuron_score', 'Endothelial_score', 'Macrophage_score']
-available_scores = [s for s in marker_scores if s in adata.obs.columns]
+score_cols = [f'{ct}_score' for ct in MARKERS if f'{ct}_score' in adata.obs.columns]
+ct_names   = [s.replace('_score', '') for s in score_cols]
 
 # Per-cluster mean scores
+cluster_mean = adata.obs.groupby('leiden')[score_cols].mean()
+cluster_mean.columns = ct_names
+
+# Relative scoring: subtract per-cell-type global mean to prevent dominant
+# cell types (Astrocyte / Neuron) from suppressing others — same approach as
+# liver snRNA-seq pipeline (02_cell_type_annotation.py)
+ct_global_mean  = cluster_mean.mean(axis=0)
+cluster_relative = cluster_mean - ct_global_mean
+
+# Unknown criteria: best relative score < 0.10 OR margin to 2nd < 0.05
+UNKNOWN_MIN_SCORE  = 0.10
+UNKNOWN_MIN_MARGIN = 0.05
+print("\n--- Cluster annotation (relative scoring) ---")
 cluster_ct = {}
-for cl in adata.obs['leiden'].unique():
-    mask = adata.obs['leiden'] == cl
-    scores = {s.replace('_score', ''): adata.obs.loc[mask, s].mean() for s in available_scores}
-    best_ct = max(scores, key=scores.get)
-    cluster_ct[cl] = best_ct
+for cl in sorted(cluster_relative.index, key=int):
+    row      = cluster_relative.loc[cl]
+    best_ct  = row.idxmax()
+    best_rel = row.max()
+    second   = row.drop(best_ct).max()
+    margin   = best_rel - second
+    if best_rel < UNKNOWN_MIN_SCORE or margin < UNKNOWN_MIN_MARGIN:
+        cluster_ct[cl] = 'Unknown'
+    else:
+        cluster_ct[cl] = best_ct
+    print(f"  Cluster {cl}: {cluster_ct[cl]:16s} (rel={best_rel:.3f}, margin={margin:.3f})")
 
 adata.obs['cell_type'] = adata.obs['leiden'].map(cluster_ct)
 print("\nCell type assignment:")
 print(adata.obs['cell_type'].value_counts())
 
 # =============================================================================
+# 3b. All-cells UMAP: cell type + Plin2 expression
+# =============================================================================
+print("\nGenerating all-cells UMAP figures...")
+
+# ── colour palette (stable across runs) ──────────────────────────────────────
+CT_PALETTE = {
+    'Microglia':      '#E53935',
+    'Macrophage':     '#F4511E',
+    'Astrocyte':      '#43A047',
+    'Oligodendrocyte':'#1E88E5',
+    'OPC':            '#039BE5',
+    'Neuron':         '#8E24AA',
+    'Endothelial':    '#FFB300',
+    'Pericyte':       '#6D4C41',
+    'T_cell':         '#00ACC1',
+    'B_cell':         '#26A69A',
+    'Unknown':        '#BDBDBD',
+}
+cell_types_present = list(adata.obs['cell_type'].unique())
+palette_use = {ct: CT_PALETTE.get(ct, '#BDBDBD') for ct in cell_types_present}
+
+umap_xy = adata.obsm['X_umap']
+
+fig_all, axes_all = plt.subplots(1, 2, figsize=(18, 7))
+fig_all.suptitle('GSE226211: All cells — Cortical Stab Wound (CTRL only)',
+                 fontsize=13, fontweight='bold')
+
+# Panel A: cell type
+ax = axes_all[0]
+for ct in sorted(cell_types_present, key=lambda x: (x == 'Unknown', x)):
+    mask = adata.obs['cell_type'] == ct
+    ax.scatter(umap_xy[mask, 0], umap_xy[mask, 1],
+               c=palette_use[ct], s=2, alpha=0.5, label=f'{ct} ({mask.sum():,})',
+               rasterized=True)
+ax.set_title('Cell Type', fontsize=12, fontweight='bold')
+ax.set_xlabel('UMAP1'); ax.set_ylabel('UMAP2')
+ax.legend(fontsize=7, markerscale=3, ncol=2,
+          loc='lower right', framealpha=0.7)
+ax.set_aspect('equal', adjustable='datalim')
+
+# Panel B: Plin2 expression
+ax2 = axes_all[1]
+if 'Plin2' in adata.var_names:
+    plin2_all = np.asarray(adata[:, 'Plin2'].X.todense()).flatten()
+    sc2 = ax2.scatter(umap_xy[:, 0], umap_xy[:, 1],
+                      c=plin2_all, cmap='YlOrRd', s=2, alpha=0.6,
+                      vmin=0, vmax=np.percentile(plin2_all, 99), rasterized=True)
+    plt.colorbar(sc2, ax=ax2, shrink=0.7, label='Plin2 (log-norm)')
+    ax2.set_title('Plin2 Expression', fontsize=12, fontweight='bold')
+else:
+    ax2.text(0.5, 0.5, 'Plin2 not found', ha='center', transform=ax2.transAxes)
+ax2.set_xlabel('UMAP1'); ax2.set_ylabel('UMAP2')
+ax2.set_aspect('equal', adjustable='datalim')
+
+plt.tight_layout()
+plt.savefig(RESULTS_DIR / 'fig0_all_cells_umap.png', bbox_inches='tight', dpi=150)
+plt.close()
+print("  Saved: fig0_all_cells_umap.png")
+
+# Score heatmap: clusters × cell types (diagnostic)
+fig_h, ax_h = plt.subplots(figsize=(14, 7))
+sns.heatmap(cluster_relative.T, cmap='RdBu_r', center=0, ax=ax_h,
+            linewidths=0.3, annot=True, fmt='.2f', annot_kws={'fontsize': 6})
+ax_h.set_title('Relative cell type scores per Leiden cluster\n(raw mean − global mean)')
+ax_h.set_xlabel('Leiden cluster')
+plt.tight_layout()
+plt.savefig(RESULTS_DIR / 'fig0b_celltype_score_heatmap.png', bbox_inches='tight', dpi=150)
+plt.close()
+print("  Saved: fig0b_celltype_score_heatmap.png")
+
+# =============================================================================
+# 3c. Dotplot: marker genes by cell type (ref: liver dotplot_markers_by_cluster)
+# =============================================================================
+print("\nGenerating dotplot of marker genes by cell type...")
+
+DOTPLOT_MARKERS = {
+    'Microglia':      ['Tmem119', 'P2ry12', 'Cx3cr1', 'Hexb'],
+    'Macrophage':     ['Ccr2', 'Lyz2', 'Ms4a7'],
+    'Astrocyte':      ['Gfap', 'Aqp4', 'Aldh1l1', 'S100b'],
+    'Oligodendrocyte':['Mbp', 'Plp1', 'Mog', 'Cnp'],
+    'OPC':            ['Pdgfra', 'Cspg4', 'Sox10'],
+    'Neuron':         ['Rbfox3', 'Snap25', 'Syt1', 'Stmn2'],
+    'Endothelial':    ['Pecam1', 'Cldn5', 'Flt1'],
+    'Pericyte':       ['Pdgfrb', 'Rgs5', 'Kcnj8'],
+    'T_cell':         ['Cd3e', 'Cd3d', 'Cd8a'],
+    'B_cell':         ['Cd79a', 'Ms4a1', 'Pax5'],
+}
+
+# Ordered cell types for y-axis (Unknown last)
+CT_ORDER = [ct for ct in DOTPLOT_MARKERS if ct in adata.obs['cell_type'].values]
+if 'Unknown' in adata.obs['cell_type'].values:
+    CT_ORDER.append('Unknown')
+
+flat_markers = [g for genes in DOTPLOT_MARKERS.values()
+                for g in genes if g in adata.var_names]
+
+sc.pl.dotplot(adata, flat_markers, groupby='cell_type', categories_order=CT_ORDER,
+              use_raw=True, standard_scale='var', show=False,
+              title='Marker gene expression by cell type (GSE226211, cortical stab wound)',
+              figsize=(max(14, len(flat_markers) * 0.55), len(CT_ORDER) * 0.65 + 1.5))
+plt.savefig(RESULTS_DIR / 'fig0c_dotplot_markers_by_celltype.png',
+            bbox_inches='tight', dpi=150)
+plt.close()
+print("  Saved: fig0c_dotplot_markers_by_celltype.png")
+
+# =============================================================================
+# 3d. Cell type proportions by condition (ref: liver cell_type_proportions.png)
+# =============================================================================
+print("\nGenerating cell type proportion figures...")
+
+prop = (adata.obs
+        .groupby(['condition', 'cell_type'])
+        .size()
+        .reset_index(name='n'))
+total = (adata.obs.groupby('condition').size().reset_index(name='total'))
+prop  = prop.merge(total, on='condition')
+prop['proportion'] = prop['n'] / prop['total']
+prop.to_csv(RESULTS_DIR / 'cell_type_proportions.csv', index=False)
+
+COND_ORDER = [c for c in ['Intact', '3dpi_CTRL', '5dpi_CTRL']
+              if c in prop['condition'].values]
+
+# ── Bar chart (side-by-side, like liver script) ───────────────────────────────
+pivot = (prop.pivot(index='cell_type', columns='condition', values='proportion')
+         .reindex(columns=COND_ORDER)
+         .fillna(0))
+# Sort rows by total abundance
+pivot = pivot.loc[pivot.sum(axis=1).sort_values(ascending=False).index]
+
+fig_p, ax_p = plt.subplots(figsize=(13, 5))
+pivot.plot(kind='bar', ax=ax_p, width=0.75,
+           color=['#4CAF50', '#FF9800', '#E53935'][:len(COND_ORDER)])
+ax_p.set_title('Cell type proportions: Intact vs 3dpi vs 5dpi (GSE226211)',
+               fontsize=12, fontweight='bold')
+ax_p.set_ylabel('Proportion of all cells')
+ax_p.set_xlabel('')
+ax_p.tick_params(axis='x', rotation=35)
+plt.setp(ax_p.get_xticklabels(), ha='right')
+ax_p.legend(title='Condition', fontsize=9)
+ax_p.grid(axis='y', alpha=0.3)
+plt.tight_layout()
+plt.savefig(RESULTS_DIR / 'fig0d_cell_type_proportions.png',
+            bbox_inches='tight', dpi=150)
+plt.close()
+print("  Saved: fig0d_cell_type_proportions.png")
+
+# ── Stacked bar (100 %) ───────────────────────────────────────────────────────
+pivot_cond = (prop.pivot(index='condition', columns='cell_type', values='proportion')
+              .reindex(index=COND_ORDER)
+              .fillna(0))
+# Sort columns by overall abundance
+col_order_stack = pivot_cond.sum(axis=0).sort_values(ascending=False).index
+pivot_cond = pivot_cond[col_order_stack]
+
+fig_s, ax_s = plt.subplots(figsize=(7, 5))
+colors_stack = [CT_PALETTE.get(ct, '#BDBDBD') for ct in col_order_stack]
+pivot_cond.plot(kind='bar', stacked=True, ax=ax_s,
+                color=colors_stack, edgecolor='white', linewidth=0.3, width=0.6)
+ax_s.set_title('Cell type composition (stacked 100%)', fontsize=12, fontweight='bold')
+ax_s.set_ylabel('Proportion')
+ax_s.set_xlabel('')
+ax_s.tick_params(axis='x', rotation=0)
+ax_s.legend(fontsize=7, bbox_to_anchor=(1.01, 1), loc='upper left', title='Cell type')
+ax_s.set_ylim(0, 1)
+ax_s.grid(axis='y', alpha=0.3)
+plt.tight_layout()
+plt.savefig(RESULTS_DIR / 'fig0e_cell_type_proportions_stacked.png',
+            bbox_inches='tight', dpi=150)
+plt.close()
+print("  Saved: fig0e_cell_type_proportions_stacked.png")
+
+print("\nCell type proportions summary:")
+print(prop[prop['condition'] == 'Intact'].sort_values('proportion', ascending=False)
+      [['cell_type', 'n', 'proportion']].to_string(index=False))
+
+# =============================================================================
 # 4. Focus on Microglia — LDAM scoring
 # =============================================================================
 print("\nFocusing on Microglia...")
-mg = adata[adata.obs['cell_type'] == 'Microglia'].copy()
-print(f"Microglia cells: {mg.shape[0]}")
+mg = adata[adata.obs['cell_type'].isin(['Microglia', 'Macrophage'])].copy()
+print(f"Myeloid cells (Microglia + Macrophage): {mg.shape[0]}")
 
-if mg.shape[0] < 50:
-    # Also include Macrophage as they may contain reactive microglia
-    mg = adata[adata.obs['cell_type'].isin(['Microglia', 'Macrophage'])].copy()
-    print(f"Including Macrophages: {mg.shape[0]} total myeloid cells")
-
-# Sub-cluster microglia
-sc.pp.neighbors(mg, n_pcs=20, use_rep='X_pca' if 'X_pca' in mg.obsm else None)
-sc.tl.leiden(mg, resolution=0.6, key_added='mg_subcluster')
-sc.tl.umap(mg)
+# Sub-cluster microglia — resolution=0.3, random_state=0 (aligned with script 03)
+sc.pp.neighbors(mg, n_pcs=20, random_state=0,
+                use_rep='X_pca' if 'X_pca' in mg.obsm else None)
+sc.tl.leiden(mg, resolution=0.3, key_added='mg_subcluster', random_state=0)
+sc.tl.umap(mg, random_state=0)
 print(f"Microglia subclusters: {mg.obs['mg_subcluster'].nunique()}")
 
 # Gene sets
@@ -379,5 +562,10 @@ for gene in sorted(all_key_genes):
 
 de_df = pd.DataFrame(de_rows)
 de_df.to_csv(RESULTS_DIR / 'mg_pseudobulk_DE.csv', index=False)
+
+# Save myeloid object for downstream scripts (03_plin2_by_subcluster.py)
+mg_h5ad = RESULTS_DIR / 'mg_myeloid.h5ad'
+mg.write_h5ad(mg_h5ad)
+print(f"Saved myeloid h5ad: {mg_h5ad}")
 
 print(f"\nAll results saved to: {RESULTS_DIR}")

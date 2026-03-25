@@ -1,5 +1,11 @@
 data/
+cache/
 *.tar
 *.gz
 __pycache__/
 .ipynb_checkpoints/
+results/liver_snRNA-seq/liver_snRNA_annotated.h5ad
+results/liver_snRNA-seq/liver_snRNA_final.h5ad
+results/liver_snRNA-seq/liver_snRNA_processed.h5ad
+results/GSE226211/mg_myeloid.h5ad
+.DS_Store
